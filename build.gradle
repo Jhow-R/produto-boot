@@ -17,13 +17,17 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	
 	runtimeOnly 'com.oracle.ojdbc:ojdbc8'
+	
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
-	providedRuntime 'javax.servlet:jstl'
-	providedRuntime 'org.apache.tomcat.embed:tomcat-embed-jasper'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
+	
+	providedRuntime 'javax.servlet:jstl'
+	providedRuntime 'org.apache.tomcat.embed:tomcat-embed-jasper'
 }
 
 test {

@@ -18,17 +18,23 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.com.fiap.model.ProdutoModel;
 import br.com.fiap.repository.CategoriaRepository;
+import br.com.fiap.repository.MarcaRepository;
 import br.com.fiap.repository.ProdutoRepository;
 
 @Controller
 @RequestMapping("/produto")
 public class ProdutoController {
 	
-	@Autowired
-	public ProdutoRepository repository;
+	private static final String PRODUTO_FOLDER = "produto/";
 	
 	@Autowired
-	private CategoriaRepository categoriaRepository;
+	public ProdutoRepository produtoRepository;
+	
+	@Autowired
+	public CategoriaRepository categoriaRepository;
+	
+	@Autowired
+	public MarcaRepository marcaRepository;
 	
 	@GetMapping("/form")
 	public String open(@RequestParam String page, 
@@ -37,50 +43,53 @@ public class ProdutoController {
 					   Model model) {
 		
 		if("produto-editar".equals(page)) {
-			model.addAttribute("produtoModel", repository.findById(id));
+			model.addAttribute("produtoModel", produtoRepository.findById(id).get());
 		}
 		
 		model.addAttribute("categorias", categoriaRepository.findAll());
+		model.addAttribute("marcas", marcaRepository.findAll());
 		
-		return page;
+		return PRODUTO_FOLDER + page;
 	}
 
 	@GetMapping()
 	public String findAll(Model model) {
 
-		model.addAttribute("produtos", repository.findAll());
-		return "produtos";
+		model.addAttribute("produtos", produtoRepository.findAll());
+		return PRODUTO_FOLDER +  "produtos";
 	}
 
 	@GetMapping("/{id}")
 	public String findById(@PathVariable("id") long id, Model model) {
 		
-		model.addAttribute("produto", repository.findById(id));
-		return "produto-detalhe";
+		model.addAttribute("produto", produtoRepository.findById(id).get());
+		return PRODUTO_FOLDER +  "produto-detalhe";
 	}
 	
 	@PostMapping()
-	public String save(@Valid ProdutoModel produtoModel, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+	public String save(@Valid ProdutoModel produtoModel, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 		
 		if(bindingResult.hasErrors()) {
-			return "produto-novo";
+			model.addAttribute("categorias", categoriaRepository.findAll());
+			return PRODUTO_FOLDER + "produto-novo";
 		}
 		
-		repository.save(produtoModel);
+		produtoRepository.save(produtoModel);
 		redirectAttributes.addFlashAttribute("messages", "Produto cadastrado com sucesso!");
 		
 		return "redirect:/produto";
 	}
 	
 	@PutMapping("/{id}")
-	public String update(@PathVariable("id") long id, @Valid ProdutoModel produtoModel, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+	public String update(@PathVariable("id") long id, @Valid ProdutoModel produtoModel, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 		
 		if(bindingResult.hasErrors()) {
-			return "produto-editar";
+			model.addAttribute("categorias", categoriaRepository.findAll());
+			return PRODUTO_FOLDER + "produto-editar";
 		}
 		
 		produtoModel.setId(id);
-		repository.update(produtoModel);
+		produtoRepository.save(produtoModel);
 		redirectAttributes.addFlashAttribute("messages", "Produto alterado com sucesso!");
 		
 		return "redirect:/produto";
@@ -89,7 +98,7 @@ public class ProdutoController {
 	@DeleteMapping("/{id}")
 	public String deleteById(@PathVariable("id") long id, RedirectAttributes redirectAttributes) {
 		
-		repository.deleteById(id);
+		produtoRepository.deleteById(id);
 		redirectAttributes.addFlashAttribute("messages", "Produto excluído com sucesso!");
 
 		return "redirect:/produto";

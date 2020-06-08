@@ -22,79 +22,73 @@ import br.com.fiap.repository.CategoriaRepository;
 @Controller
 @RequestMapping("/categoria")
 public class CategoriaController {
+	
+	private static final String CATEGORIA_FOLDER = "categoria/";
 
 	@Autowired
-	private CategoriaRepository repository;
-
-	@GetMapping
+	public CategoriaRepository repository;
+	
+	@GetMapping("/form")
+	public String open(@RequestParam String page, 
+					   @RequestParam(required = false) Long id,
+					   @ModelAttribute("categoriaModel") CategoriaModel categoriaModel, 
+					   Model model) {
+		
+		if("categoria-editar".equals(page)) {
+			model.addAttribute("categoriaModel", repository.findById(id).get());
+		}
+		
+		return CATEGORIA_FOLDER + page;
+	}
+	
+	@GetMapping()
 	public String findAll(Model model) {
 
 		model.addAttribute("categorias", repository.findAll());
-
-		return "categorias";
+		return CATEGORIA_FOLDER +  "categorias";
 	}
 
 	@GetMapping("/{id}")
-	public String findById(@PathVariable Long id, Model model) {
-
-		CategoriaModel categoriaModel = repository.findById(id);
-		model.addAttribute("categoria", categoriaModel);
-
-		return "categoria-detalhe";
+	public String findById(@PathVariable("id") long id, Model model) {
+		
+		model.addAttribute("categoria", repository.findById(id).get());
+		return CATEGORIA_FOLDER +  "categoria-detalhe";
 	}
 	
-	@GetMapping("/form")
-	public String openForm(@RequestParam String page,
-							@RequestParam(required = false) Long id,
-							@ModelAttribute("categoriaModel") CategoriaModel categoriaModel,
-							Model model) {
+	@PostMapping()
+	public String save(@Valid CategoriaModel categoriaModel, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 		
-		if ("categoria-editar".equals(page)) {
-			model.addAttribute("categoriaModel", repository.findById(id));
-		}
-		
-		return page;
-	}
-
-	@PostMapping
-	public String save(@Valid CategoriaModel categoriaModel, 
-						BindingResult bindingResult,
-						RedirectAttributes redirectAttributes) {
-		
-		if (bindingResult.hasErrors()) {
-			return "categoria-nova";
+		if(bindingResult.hasErrors()) {
+			return CATEGORIA_FOLDER + "categoria-novo";
 		}
 		
 		repository.save(categoriaModel);
-		redirectAttributes.addFlashAttribute("messages", "Categoria salva com sucesso!");
+		redirectAttributes.addFlashAttribute("messages", "Categoria cadastrada com sucesso!");
 		
-		return "redirect:/categoria";		
+		return "redirect:/categoria";
 	}
 	
 	@PutMapping("/{id}")
-	public String update(@PathVariable Long id,
-						 @Valid CategoriaModel categoriaModel,
-						 BindingResult bindingResult,
-						 RedirectAttributes redirectAttributes) {
+	public String update(@PathVariable("id") long id, @Valid CategoriaModel categoriaModel, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 		
-		if (bindingResult.hasErrors()) {
-			return "categoria-editar";
+		if(bindingResult.hasErrors()) {
+			return CATEGORIA_FOLDER + "categoria-editar";
 		}
 		
 		categoriaModel.setIdCategoria(id);
-		repository.update(categoriaModel);
-		
-		redirectAttributes.addFlashAttribute("messages", "Categoria atualizada com sucesso ;)");
+		repository.save(categoriaModel);
+		redirectAttributes.addFlashAttribute("messages", "Categoria alterado com sucesso!");
 		
 		return "redirect:/categoria";
 	}
 	
 	@DeleteMapping("/{id}")
-	public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+	public String deleteById(@PathVariable("id") long id, RedirectAttributes redirectAttributes) {
 		
-		repository.delete(id);
-		redirectAttributes.addFlashAttribute("messages", "Categoria removida :)");
-		
+		repository.deleteById(id);
+		redirectAttributes.addFlashAttribute("messages", "Categoria excluída com sucesso!");
+
 		return "redirect:/categoria";
 	}
+	
 }

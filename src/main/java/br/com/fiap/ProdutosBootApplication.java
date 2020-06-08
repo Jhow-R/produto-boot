@@ -1,9 +1,9 @@
 package br.com.fiap;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.apache.catalina.Context;
 import org.apache.tomcat.util.scan.StandardJarScanner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 
@@ -13,7 +13,7 @@ public class ProdutosBootApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ProdutosBootApplication.class, args);
 	}
-
+	
 	@Bean
 	public TomcatServletWebServerFactory tomcatFactory() {
 		return new TomcatServletWebServerFactory() {

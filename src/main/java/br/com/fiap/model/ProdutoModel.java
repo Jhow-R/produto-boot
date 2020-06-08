@@ -1,22 +1,42 @@
 package br.com.fiap.model;
 
+import java.math.BigDecimal;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.springframework.format.annotation.NumberFormat;
+import org.springframework.format.annotation.NumberFormat.Style;
+
+@Entity
+@Table(name = "TB_PRODUTO")
 public class ProdutoModel {
 
 	private long id;
 	private String nome;
 	private String sku;
 	private String descricao;
-	private double preco;
+	private BigDecimal preco;
 	private String caracteristicas;
 	private CategoriaModel categoria;
+	private MarcaModel marca;
 
 	public ProdutoModel() {
 	}
 
-	public ProdutoModel(Long id, String nome, String sku, String descricao, double preco, String caracteristicas) {
+	public ProdutoModel(long id, String nome, String sku, String descricao, BigDecimal preco, String caracteristicas,
+			CategoriaModel categoria, MarcaModel marca) {
 		super();
 		this.id = id;
 		this.nome = nome;
@@ -24,17 +44,25 @@ public class ProdutoModel {
 		this.descricao = descricao;
 		this.preco = preco;
 		this.caracteristicas = caracteristicas;
+		this.categoria = categoria;
+		this.marca = marca;
 	}
 
-	public Long getId() {
+	@Id
+	@Column(name = "ID")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PRODUTO_SEQ")
+	@SequenceGenerator(name = "PRODUTO_SEQ", sequenceName = "PRODUTO_SEQ", allocationSize = 1)
+	public long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
-	@Size(min = 2, max = 40, message = "Nome deve ter no mínimo 2 e no máximo 40 caracteres")
+	@Column(name = "NOME")
+	@NotNull(message = "Nome obrigatório")
+	@Size(min = 2, max = 50, message = "NOME deve ser entre 2 e 50 caracteres")
 	public String getNome() {
 		return nome;
 	}
@@ -43,7 +71,9 @@ public class ProdutoModel {
 		this.nome = nome;
 	}
 
-	@Size(min = 8, max = 8, message = "SKU deve conter 8 caracteres")
+	@Column(name = "SKU")
+	@NotNull(message = "Sku obrigatório")
+	@Size(min = 2, max = 40, message = "SKU deve ser entre 2 e 50 caracteres")
 	public String getSku() {
 		return sku;
 	}
@@ -52,7 +82,9 @@ public class ProdutoModel {
 		this.sku = sku;
 	}
 
-	@Size(min = 1, max = 200, message = "Descricao deve ter no mínimo 1 e no máximo 200 caracteres")
+	@Column(name = "DESCRICAO")
+	@NotNull(message = "Descrição obrigatório")
+	@Size(min = 10, max = 400, message = "DESCRIÇÃO deve ser entre 10 e 400 caracteres")
 	public String getDescricao() {
 		return descricao;
 	}
@@ -61,16 +93,19 @@ public class ProdutoModel {
 		this.descricao = descricao;
 	}
 
-	@DecimalMin(value = "0.1", message = "Preço deve ser acima de 0.0")
-	public double getPreco() {
+	@Column(name = "PRECO")
+	@DecimalMin(value = "0.01", message = "PRECO deve ser acima de 0.01")
+	@NumberFormat(style = Style.CURRENCY)
+	public BigDecimal getPreco() {
 		return preco;
 	}
 
-	public void setPreco(double preco) {
+	public void setPreco(BigDecimal preco) {
 		this.preco = preco;
 	}
 
-	@Size(min = 1, max = 200, message = "Caracteristicas deve ter no mínimo 1 e no máximo 200 caracteres")
+	@Column(name = "CARACTERISTICAS")
+	@Size(min = 10, max = 400, message = "CARACTERÍSTICAS deve ser entre 10 e 400 caracteres")
 	public String getCaracteristicas() {
 		return caracteristicas;
 	}
@@ -78,7 +113,9 @@ public class ProdutoModel {
 	public void setCaracteristicas(String caracteristicas) {
 		this.caracteristicas = caracteristicas;
 	}
-
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ID_CATEGORIA", nullable = false)
 	public CategoriaModel getCategoria() {
 		return categoria;
 	}
@@ -86,6 +123,15 @@ public class ProdutoModel {
 	public void setCategoria(CategoriaModel categoria) {
 		this.categoria = categoria;
 	}
-	
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ID_MARCA", nullable = false)
+	public MarcaModel getMarca() {
+		return marca;
+	}
+
+	public void setMarca(MarcaModel marca) {
+		this.marca = marca;
+	}
 
 }
