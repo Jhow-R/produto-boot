@@ -1,6 +1,7 @@
 package br.com.fiap.model;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -31,6 +34,7 @@ public class ProdutoModel {
 	private String caracteristicas;
 	private CategoriaModel categoria;
 	private MarcaModel marca;
+	private List<LojaModel> lojas;
 
 	public ProdutoModel() {
 	}
@@ -61,7 +65,7 @@ public class ProdutoModel {
 	}
 
 	@Column(name = "NOME")
-	@NotNull(message = "Nome obrigatório")
+	@NotNull(message = "Nome obrigatÃ³rio")
 	@Size(min = 2, max = 50, message = "NOME deve ser entre 2 e 50 caracteres")
 	public String getNome() {
 		return nome;
@@ -72,7 +76,7 @@ public class ProdutoModel {
 	}
 
 	@Column(name = "SKU")
-	@NotNull(message = "Sku obrigatório")
+	@NotNull(message = "Sku obrigatÃ³rio")
 	@Size(min = 2, max = 40, message = "SKU deve ser entre 2 e 50 caracteres")
 	public String getSku() {
 		return sku;
@@ -83,8 +87,8 @@ public class ProdutoModel {
 	}
 
 	@Column(name = "DESCRICAO")
-	@NotNull(message = "Descrição obrigatório")
-	@Size(min = 10, max = 400, message = "DESCRIÇÃO deve ser entre 10 e 400 caracteres")
+	@NotNull(message = "DescriÃ§Ã£o obrigatÃ³rio")
+	@Size(min = 10, max = 400, message = "DESCRIÃ‡ÃƒO deve ser entre 10 e 400 caracteres")
 	public String getDescricao() {
 		return descricao;
 	}
@@ -105,7 +109,7 @@ public class ProdutoModel {
 	}
 
 	@Column(name = "CARACTERISTICAS")
-	@Size(min = 10, max = 400, message = "CARACTERÍSTICAS deve ser entre 10 e 400 caracteres")
+	@Size(min = 10, max = 400, message = "CARACTERÃ�STICAS deve ser entre 10 e 400 caracteres")
 	public String getCaracteristicas() {
 		return caracteristicas;
 	}
@@ -133,5 +137,18 @@ public class ProdutoModel {
 	public void setMarca(MarcaModel marca) {
 		this.marca = marca;
 	}
+	
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "TB_PRODUTO_LOJA",
+			joinColumns = @JoinColumn(name="ID", referencedColumnName = "ID"),
+			inverseJoinColumns = @JoinColumn(name = "ID_LOJA", referencedColumnName = "ID_LOJA"))
+	public List<LojaModel> getLojas() {
+		return lojas;
+	}
+
+	public void setLojas(List<LojaModel> lojas) {
+		this.lojas = lojas;
+	}
+
 
 }
