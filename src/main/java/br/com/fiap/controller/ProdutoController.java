@@ -1,5 +1,7 @@
 package br.com.fiap.controller;
 
+import java.math.BigDecimal;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,6 +59,7 @@ public class ProdutoController {
 	public String findAll(Model model) {
 
 		model.addAttribute("produtos", produtoRepository.findAll());
+		// JPQL: model.addAttribute("produtos", produtoRepository.findExpensiveProducts(BigDecimal.valueOf(3)));
 		return PRODUTO_FOLDER +  "produtos";
 	}
 

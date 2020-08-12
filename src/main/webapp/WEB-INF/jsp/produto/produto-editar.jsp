@@ -93,7 +93,7 @@
 						</div>
 						
 						<div class="form-group">
-							<label class="control-label" for="mesnagem">Características:</label>
+							<label class="control-label" for="mensagem">Características:</label>
 							<form:textarea id="mensagem" class="form-control" path="caracteristicas" rows="4" cols="100" />
 							<font color="red"><form:errors path="caracteristicas"/></font><br/>
 						

@@ -70,8 +70,8 @@
 					</div>
 
 					<div class="form-group">
-						<label class="control-label" for="preco">Preço:</label> <label
-							class="label label-default">${produto.preco}</label>
+						<label class="control-label" for="preco">Preço:</label> 
+						<label class="label label-default">${produto.preco}</label>
 					</div>
 
 					<div class="form-group">
