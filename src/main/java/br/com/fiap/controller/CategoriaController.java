@@ -1,9 +1,12 @@
 package br.com.fiap.controller;
 
+import java.net.URI;
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,14 +15,17 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.fiap.model.CategoriaModel;
 import br.com.fiap.repository.CategoriaRepository;
 
-@Controller
+@RestController
 @RequestMapping("/categoria")
 public class CategoriaController {
 	
@@ -42,30 +48,34 @@ public class CategoriaController {
 	}
 	
 	@GetMapping()
-	public String findAll(Model model) {
+	public ResponseEntity<List<CategoriaModel>> findAll(Model model) {
 
-		model.addAttribute("categorias", repository.findAll());
-		return CATEGORIA_FOLDER +  "categorias";
+		//model.addAttribute("categorias", repository.findAll());
+		 List<CategoriaModel> categorias = repository.findAll();
+
+		return ResponseEntity.ok(categorias);
 	}
 
 	@GetMapping("/{id}")
-	public String findById(@PathVariable("id") long id, Model model) {
+	public ResponseEntity<CategoriaModel> findById(@PathVariable("id") long id, Model model) {
 		
-		model.addAttribute("categoria", repository.findById(id).get());
-		return CATEGORIA_FOLDER +  "categoria-detalhe";
+		CategoriaModel categoria = repository.findById(id).get();
+		return ResponseEntity.ok(categoria);
 	}
 	
 	@PostMapping()
-	public String save(@Valid CategoriaModel categoriaModel, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+	public ResponseEntity save(@RequestBody @Valid CategoriaModel categoriaModel, BindingResult bindingResult) {
 		
 		if(bindingResult.hasErrors()) {
-			return CATEGORIA_FOLDER + "categoria-novo";
+			return ResponseEntity.badRequest().build();
 		}
 		
-		repository.save(categoriaModel);
-		redirectAttributes.addFlashAttribute("messages", "Categoria cadastrada com sucesso!");
+		CategoriaModel categoria = repository.save(categoriaModel);
+		URI location = ServletUriComponentsBuilder.
+				fromCurrentRequest().path("/{id}")
+				.buildAndExpand(categoria.getIdCategoria()).toUri();
 		
-		return "redirect:/categoria";
+		return ResponseEntity.created(location).build();
 	}
 	
 	@PutMapping("/{id}")

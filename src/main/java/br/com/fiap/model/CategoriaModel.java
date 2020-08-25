@@ -13,12 +13,19 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Table(name = "TB_CATEGORIA")
 public class CategoriaModel {
 
 	private long idCategoria;
+	
+	//@JsonProperty()
 	private String nomeCategoria;
+	
+	@JsonIgnore
 	private List<ProdutoModel> produtos;
 
 	public CategoriaModel() {
