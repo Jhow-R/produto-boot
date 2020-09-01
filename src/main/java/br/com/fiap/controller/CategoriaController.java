@@ -34,19 +34,6 @@ public class CategoriaController {
 	@Autowired
 	public CategoriaRepository repository;
 	
-	@GetMapping("/form")
-	public String open(@RequestParam String page, 
-					   @RequestParam(required = false) Long id,
-					   @ModelAttribute("categoriaModel") CategoriaModel categoriaModel, 
-					   Model model) {
-		
-		if("categoria-editar".equals(page)) {
-			model.addAttribute("categoriaModel", repository.findById(id).get());
-		}
-		
-		return CATEGORIA_FOLDER + page;
-	}
-	
 	@GetMapping()
 	public ResponseEntity<List<CategoriaModel>> findAll(Model model) {
 
@@ -79,26 +66,22 @@ public class CategoriaController {
 	}
 	
 	@PutMapping("/{id}")
-	public String update(@PathVariable("id") long id, @Valid CategoriaModel categoriaModel, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+	public ResponseEntity update(@PathVariable("id") long id, @RequestBody @Valid CategoriaModel categoriaModel, BindingResult bindingResult) {
 		
 		if(bindingResult.hasErrors()) {
-			return CATEGORIA_FOLDER + "categoria-editar";
+			return ResponseEntity.badRequest().build();
 		}
 		
 		categoriaModel.setIdCategoria(id);
 		repository.save(categoriaModel);
-		redirectAttributes.addFlashAttribute("messages", "Categoria alterado com sucesso!");
 		
-		return "redirect:/categoria";
+		return ResponseEntity.ok().build();
 	}
 	
 	@DeleteMapping("/{id}")
-	public String deleteById(@PathVariable("id") long id, RedirectAttributes redirectAttributes) {
+	public ResponseEntity deleteById(@PathVariable("id") long id) {
 		
 		repository.deleteById(id);
-		redirectAttributes.addFlashAttribute("messages", "Categoria excluída com sucesso!");
-
-		return "redirect:/categoria";
+		return ResponseEntity.noContent().build();
 	}
-	
 }

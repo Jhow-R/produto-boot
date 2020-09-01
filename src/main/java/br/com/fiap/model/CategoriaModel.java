@@ -50,8 +50,8 @@ public class CategoriaModel {
 	}
 
 	@Column(name = "NOME_CATEGORIA")
-	@NotNull(message = "Nome obrigatÃ³rio")
-	@Size(min = 2, max = 50, message = "NOME deve ser entre 2 e 40 caracteres")
+	@NotNull(message = "Nome obrigatório")
+	@Size(min = 2, max = 50, message = "Nome deve ser entre 2 e 50 caracteres")
 	public String getNomeCategoria() {
 		return nomeCategoria;
 	}

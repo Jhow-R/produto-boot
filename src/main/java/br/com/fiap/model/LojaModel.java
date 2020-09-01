@@ -11,6 +11,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -24,8 +25,9 @@ public class LojaModel {
 	private long id;
 
 	@Column(name = "NOME_LOJA")
+	@NotNull(message = "Nome obrigatório")
 	@NotBlank
-	@Size(min = 2, max = 100)
+	@Size(min = 2, max = 50, message = "Nome deve ser entre 2 e 50 caracteres")
 	private String nome;
 
 	@ManyToMany(mappedBy = "lojas")
