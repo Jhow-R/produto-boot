@@ -51,26 +51,18 @@ public class CategoriaController {
 	}
 	
 	@PostMapping()
-	public ResponseEntity save(@RequestBody @Valid CategoriaModel categoriaModel, BindingResult bindingResult) {
-		
-		if(bindingResult.hasErrors()) {
-			return ResponseEntity.badRequest().build();
-		}
+	public ResponseEntity save(@RequestBody @Valid CategoriaModel categoriaModel) {
 		
 		CategoriaModel categoria = repository.save(categoriaModel);
-		URI location = ServletUriComponentsBuilder.
-				fromCurrentRequest().path("/{id}")
+		
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(categoria.getIdCategoria()).toUri();
 		
 		return ResponseEntity.created(location).build();
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity update(@PathVariable("id") long id, @RequestBody @Valid CategoriaModel categoriaModel, BindingResult bindingResult) {
-		
-		if(bindingResult.hasErrors()) {
-			return ResponseEntity.badRequest().build();
-		}
+	public ResponseEntity update(@PathVariable("id") long id, @RequestBody @Valid CategoriaModel categoriaModel) {
 		
 		categoriaModel.setIdCategoria(id);
 		repository.save(categoriaModel);

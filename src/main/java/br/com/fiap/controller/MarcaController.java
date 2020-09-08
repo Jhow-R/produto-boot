@@ -43,11 +43,7 @@ public class MarcaController {
 	}
 	
 	@PostMapping()
-	public ResponseEntity save(@RequestBody @Valid MarcaModel marcaModel, BindingResult bindingResult) {
-		
-		if(bindingResult.hasErrors()) {
-			return ResponseEntity.badRequest().build();
-		}
+	public ResponseEntity save(@RequestBody @Valid MarcaModel marcaModel) {
 		
 		MarcaModel marca = repository.save(marcaModel);
 		
@@ -58,12 +54,8 @@ public class MarcaController {
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity update(@PathVariable("id") long id, @RequestBody @Valid MarcaModel marcaModel, BindingResult bindingResult) {
-		
-		if(bindingResult.hasErrors()) {
-			return ResponseEntity.badRequest().build();
-		}
-		
+	public ResponseEntity update(@PathVariable("id") long id, @RequestBody @Valid MarcaModel marcaModel) {
+
 		marcaModel.setIdMarca(id);
 		repository.save(marcaModel);
 		

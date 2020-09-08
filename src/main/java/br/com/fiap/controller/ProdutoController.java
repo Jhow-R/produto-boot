@@ -47,18 +47,12 @@ public class ProdutoController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<ProdutoModel> findById(@PathVariable("id") long id) {
-		
 		ProdutoModel produto = produtoRepository.findById(id).get();
 		return ResponseEntity.ok(produto);
 	}
 	
 	@PostMapping()
-	public ResponseEntity save(@RequestBody @Valid ProdutoModel produtoModel, BindingResult bindingResult) {
-		
-		if(bindingResult.hasErrors()) {
-			return ResponseEntity.badRequest().build();
-		}
-		
+	public ResponseEntity save(@RequestBody @Valid ProdutoModel produtoModel, BindingResult bindingResult) {	
 		ProdutoModel produto = produtoRepository.save(produtoModel);
 		
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -69,11 +63,6 @@ public class ProdutoController {
 	
 	@PutMapping("/{id}")
 	public ResponseEntity update(@PathVariable("id") long id, @RequestBody @Valid ProdutoModel produtoModel, BindingResult bindingResult) {
-		
-		if(bindingResult.hasErrors()) {
-			return ResponseEntity.badRequest().build();
-		}
-		
 		produtoModel.setId(id);
 		produtoRepository.save(produtoModel);
 		//produtoRepository.updateProductNameAndSku(produtoModel.getNome(), produtoModel.getSku(), produtoModel.getId());
