@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import br.com.fiap.business.ProdutoBusiness;
 import br.com.fiap.model.ProdutoModel;
 import br.com.fiap.repository.CategoriaRepository;
 import br.com.fiap.repository.MarcaRepository;
@@ -36,6 +37,9 @@ public class ProdutoController {
 	
 	@Autowired
 	public MarcaRepository marcaRepository;
+	
+	@Autowired
+	public ProdutoBusiness produtoBusiness;
 
 	@GetMapping()
 	public ResponseEntity<List<ProdutoModel>> findAll(Model model) {
@@ -53,7 +57,10 @@ public class ProdutoController {
 	
 	@PostMapping()
 	public ResponseEntity save(@RequestBody @Valid ProdutoModel produtoModel, BindingResult bindingResult) {	
-		ProdutoModel produto = produtoRepository.save(produtoModel);
+		
+		ProdutoModel produtoComRegraNegocio = produtoBusiness.applyBusiness(produtoModel);
+		
+		ProdutoModel produto = produtoRepository.save(produtoComRegraNegocio);
 		
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(produto.getId()).toUri();

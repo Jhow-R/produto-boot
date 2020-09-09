@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import br.com.fiap.business.BusinessException;
+
 @RestControllerAdvice
 public class RestExceptionHandler {
 
@@ -72,5 +74,11 @@ public class RestExceptionHandler {
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
 	public ResponseException handleException(HttpServletRequest request, Exception exception) {
 		return new ResponseException(request, UNEXPECTED_ERROR, exception.getMessage());
+	}
+	
+	@ExceptionHandler(value = BusinessException.class)
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	public ResponseException handleBusinessException(HttpServletRequest request, Exception exception) {
+		return new ResponseException(request, INVALID_ARGUMENTS, exception.getMessage());
 	}
 }
