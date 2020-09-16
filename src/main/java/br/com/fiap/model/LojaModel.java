@@ -14,6 +14,10 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.springframework.beans.factory.annotation.Required;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "TB_LOJA")
 public class LojaModel {
@@ -30,7 +34,14 @@ public class LojaModel {
 	@Size(min = 2, max = 50, message = "Nome deve ser entre 2 e 50 caracteres")
 	private String nome;
 
+	@Column(name = "URL_LOJA")
+	@NotNull(message = "URL obrigatório")
+	@NotBlank
+	@Size(min = 5, max = 50, message = "Url deve ser entre 5 e 50 caracteres")
+	private String url;
+
 	@ManyToMany(mappedBy = "lojas")
+	@JsonIgnore
 	private List<ProdutoModel> produtos;
 
 	public LojaModel() {
@@ -58,6 +69,14 @@ public class LojaModel {
 		this.nome = nome;
 	}
 
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	
 	public List<ProdutoModel> getProdutos() {
 		return produtos;
 	}
