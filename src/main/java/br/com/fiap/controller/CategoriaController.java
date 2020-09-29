@@ -24,55 +24,64 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.fiap.model.CategoriaModel;
 import br.com.fiap.repository.CategoriaRepository;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping("/categoria")
 public class CategoriaController {
-	
+
 	private static final String CATEGORIA_FOLDER = "categoria/";
 
 	@Autowired
 	public CategoriaRepository repository;
-	
+
+	@ApiOperation(value = "Lista todas as categorias existentes")
+	@ApiResponses({ @ApiResponse(code = 200, message = "Listagem com sucesso"),
+			@ApiResponse(code = 400, message = "Foi informado algo incorreto"),
+			@ApiResponse(code = 500, message = "Erro ao buscar no banco")
+
+	})
 	@GetMapping()
 	public ResponseEntity<List<CategoriaModel>> findAll(Model model) {
 
-		//model.addAttribute("categorias", repository.findAll());
-		 List<CategoriaModel> categorias = repository.findAll();
+		// model.addAttribute("categorias", repository.findAll());
+		List<CategoriaModel> categorias = repository.findAll();
 
 		return ResponseEntity.ok(categorias);
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<CategoriaModel> findById(@PathVariable("id") long id, Model model) {
-		
+
 		CategoriaModel categoria = repository.findById(id).get();
 		return ResponseEntity.ok(categoria);
 	}
-	
+
 	@PostMapping()
 	public ResponseEntity save(@RequestBody @Valid CategoriaModel categoriaModel) {
-		
+
 		CategoriaModel categoria = repository.save(categoriaModel);
-		
+
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(categoria.getIdCategoria()).toUri();
-		
+
 		return ResponseEntity.created(location).build();
 	}
-	
+
 	@PutMapping("/{id}")
 	public ResponseEntity update(@PathVariable("id") long id, @RequestBody @Valid CategoriaModel categoriaModel) {
-		
+
 		categoriaModel.setIdCategoria(id);
 		repository.save(categoriaModel);
-		
+
 		return ResponseEntity.ok().build();
 	}
-	
+
 	@DeleteMapping("/{id}")
 	public ResponseEntity deleteById(@PathVariable("id") long id) {
-		
+
 		repository.deleteById(id);
 		return ResponseEntity.noContent().build();
 	}

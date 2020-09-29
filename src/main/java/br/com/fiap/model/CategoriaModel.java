@@ -16,13 +16,17 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity
 @Table(name = "TB_CATEGORIA")
 public class CategoriaModel {
 
+	@ApiModelProperty(value = "ID da categoria", position = 1)
 	private long idCategoria;
 	
 	//@JsonProperty()
+	@ApiModelProperty(value = "Nome da categoria")
 	private String nomeCategoria;
 	
 	@JsonIgnore
